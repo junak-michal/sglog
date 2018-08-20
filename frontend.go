@@ -66,11 +66,21 @@ func (logger *Logger) log(level Level, format string, a ...interface{}) {
 	// in any other way.
 	_, file, line, _ := runtime.Caller(callerShipFromLog)
 	entry := LogEntry{
-		Level: level,
+		Level:   level,
 		PkgPath: logger.pkgPath,
-		File: file,
-		Line: line,
-		Message: fmt.Sprintf(format, a),
+		File:    file,
+		Line:    line,
+		Message: fmt.Sprintf(format, a...),
 	}
-	getGlobalBackend().Log(&entry)
+	passEntryToBackend(&entry)
+}
+
+func passEntryToBackend(entry *LogEntry) {
+	backendInUse := getGlobalBackend()
+	err := backendInUse.Log(entry)
+	if err != nil && backendInUse != defaultBackend {
+		// Ignoring possible error.
+		// Default should by as safe to use as possible.
+		defaultBackend.Log(entry)
+	}
 }

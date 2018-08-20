@@ -22,9 +22,9 @@ func loggerFromGlobalMap(pkgPath string) (result *Logger) {
 }
 
 var (
-	// TODO: default should not be nil
-	backend    Backend
-	backendMut sync.Mutex
+	defaultBackend Backend = new(StderrBackend)
+	backend                = defaultBackend
+	backendMut     sync.Mutex
 )
 
 func getGlobalBackend() Backend {
