@@ -27,10 +27,3 @@ type LogEntry struct {
 	Line    int
 	Message string
 }
-
-// Backend receives LogEntry instances from the frontend (represented by the Logger type) after they were filtered by
-// log level. Backend's only responsibility is to write them somewhere - syslog, file, database, error output, etc.
-type Backend interface {
-	// Log writes a single LogEntry to the backend returning a non-nil error if the operation was not successful.
-	Log(entry *LogEntry) error
-}

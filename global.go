@@ -2,6 +2,7 @@ package sglog
 
 import (
 	"sync"
+	"errors"
 )
 
 var (
@@ -34,12 +35,13 @@ func getGlobalBackend() Backend {
 	return backend
 }
 
-func setGlobalBackend(newBackend Backend) {
+func setGlobalBackend(newBackend Backend) (err error) {
 	if backend == nil {
-		// TODO: error
-		return
+		err = errors.New("cannot use nil logging backend")
+	} else {
+		backendMut.Lock()
+		defer backendMut.Unlock()
+		backend = newBackend
 	}
-	backendMut.Lock()
-	defer backendMut.Unlock()
-	backend = newBackend
+	return
 }

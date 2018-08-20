@@ -84,3 +84,5 @@ func passEntryToBackend(entry *LogEntry) {
 		defaultBackend.Log(entry)
 	}
 }
+
+var internalLog = GetLogger("github.com/junak-michal/sglog")
