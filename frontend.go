@@ -54,9 +54,9 @@ func newLogger(pkgPath string) (result *Logger) {
 	return
 }
 
-// callerShipFromLog holds number of frames that we need to ascend from the log method to the
+// callerSkipFromLog holds number of frames that we need to ascend from the log method to the
 // actual code that wanted to log a message.
-const callerShipFromLog = 2
+const callerSkipFromLog = 2
 
 func (logger *Logger) log(level Level, format string, a ...interface{}) {
 	if level < logger.level {
@@ -64,7 +64,7 @@ func (logger *Logger) log(level Level, format string, a ...interface{}) {
 	}
 	// If we do not recover the information then they won't be part of the LogEntry - no need to handle it
 	// in any other way.
-	_, file, line, _ := runtime.Caller(callerShipFromLog)
+	_, file, line, _ := runtime.Caller(callerSkipFromLog)
 	entry := LogEntry{
 		Level:   level,
 		PkgPath: logger.pkgPath,
