@@ -2,6 +2,7 @@ package sglog
 
 import (
 	"fmt"
+	"path"
 	"runtime"
 )
 
@@ -64,11 +65,12 @@ func (logger *Logger) log(level Level, format string, a ...interface{}) {
 	}
 	// If we do not recover the information then they won't be part of the LogEntry - no need to handle it
 	// in any other way.
-	_, file, line, _ := runtime.Caller(callerSkipFromLog)
+	_, filePath, line, _ := runtime.Caller(callerSkipFromLog)
+	_, fileName := path.Split(filePath)
 	entry := LogEntry{
 		Level:   level,
 		PkgPath: logger.pkgPath,
-		File:    file,
+		File:    fileName,
 		Line:    line,
 		Message: fmt.Sprintf(format, a...),
 	}

@@ -15,7 +15,7 @@ func (stdeb *StderrBackend) Log(entry *LogEntry) error {
 	return nil                   // never fails
 }
 
-const stdErrLogFmt = "%s %s\t[%s:%d]\t%s"
+const stdErrLogFmt = "%s %s [%s:%d] %s"
 
 func lvlToString(level Level) (result string) {
 	switch level {
