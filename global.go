@@ -1,8 +1,8 @@
 package sglog
 
 import (
-	"sync"
 	"errors"
+	"sync"
 )
 
 var (

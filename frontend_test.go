@@ -71,12 +71,55 @@ var setLevelTestData = []*lvlSet{
 }
 
 func TestSetLevel(t *testing.T) {
-	logger := GetLogger("testlogger")
+	logger := GetLogger("TestSetLevel_logger")
 	for _, inData := range setLevelTestData {
 		inData.setUpLogger(logger)
 		inData.logMessages(logger)
 		if !inData.verify() {
 			t.Errorf("Messages not logged as expected. Test  input: %v", inData)
+		}
+	}
+}
+
+func TestFileName(t *testing.T) {
+	backend := new(mockRecvBackend)
+	UseBackend(backend)
+	logger := GetLogger("TestFileName_logger")
+	logger.Debug("Log message %d with %d arguments, %s", 1, 3, "BOO!")
+	logger.Info("Log message without arguments.")
+	logger.Warning("%s", "Log message as an argument.")
+	if len(backend.received) != 3 {
+		t.Errorf("Received too many log entries.")
+	}
+	for _, entry := range backend.received {
+		if entry.File != "frontend_test.go" {
+			t.Errorf("Received log entry with wrong file name.")
+		}
+	}
+}
+
+var testPkgPathData = []struct {
+	fullPkgPath     string
+	expectedPkgPath string
+}{
+	{fullPkgPath: "bitbucket.org/myteamname/project/subpkg", expectedPkgPath: "project/subpkg"},
+	{fullPkgPath: "main", expectedPkgPath: "main"},
+	{fullPkgPath: "cool/pkg", expectedPkgPath: "cool/pkg"},
+	{fullPkgPath: "a", expectedPkgPath: "a"},
+	{fullPkgPath: "/mypkg", expectedPkgPath: "mypkg"},
+	{fullPkgPath: "myproj/mypkg/", expectedPkgPath: "mypkg/"},
+}
+
+func TestPkgPath(t *testing.T) {
+	backend := new(mockRecvBackend)
+	UseBackend(backend)
+	for _, input := range testPkgPathData {
+		logger := GetLogger(input.fullPkgPath)
+		logger.Debug("Doesn't matter what this message contains.")
+		// This should never evaluate to -1
+		lastEntry := backend.received[len(backend.received)-1]
+		if lastEntry.PkgPath != input.expectedPkgPath {
+			t.Errorf("Expected pkgPath '%s' but reveived '%s'.", input.expectedPkgPath, lastEntry.PkgPath)
 		}
 	}
 }

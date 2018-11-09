@@ -9,8 +9,9 @@ import (
 // Logger represents an object that can be used for logging by single package.
 // The instances of Logger should be acquired by calling GetLogger function.
 type Logger struct {
-	pkgPath string
-	level   Level
+	pkgPath   string
+	pathStrip string
+	level     Level
 }
 
 // GetLogger gets a Logger instance registered under pkgPath key. Even though the pkgPath key can be
@@ -51,8 +52,18 @@ func (logger *Logger) Warning(format string, a ...interface{}) {
 func newLogger(pkgPath string) (result *Logger) {
 	result = new(Logger)
 	result.pkgPath = pkgPath
+	result.pathStrip = stripPkgPath(pkgPath)
 	result.level = Debug
 	return
+}
+
+func stripPkgPath(pkgPath string) string {
+	rest, last := path.Split(pkgPath)
+	if rest == "" || rest == "/" {
+		return last
+	}
+	nextToLast := path.Base(rest)
+	return fmt.Sprintf("%s/%s", nextToLast, last)
 }
 
 // callerSkipFromLog holds number of frames that we need to ascend from the log method to the
@@ -69,7 +80,7 @@ func (logger *Logger) log(level Level, format string, a ...interface{}) {
 	_, fileName := path.Split(filePath)
 	entry := LogEntry{
 		Level:   level,
-		PkgPath: logger.pkgPath,
+		PkgPath: logger.pathStrip,
 		File:    fileName,
 		Line:    line,
 		Message: fmt.Sprintf(format, a...),
