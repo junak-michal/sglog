@@ -1,0 +1,10 @@
+# Production example, that sets default level to Info.
+# Version must be 1.
+version: 1
+# Info level is more suitable as a default level for production.
+default: Info
+loggers:
+  bitbucket.org/mysw/currentlydebugging: Debug
+  bitbucket.org/mysw/noisyinfo: Warning
+  bitbucket.org/somelibrary/whynotrepeatthedefault: Info
+  main: Debug

@@ -6,8 +6,9 @@ import (
 )
 
 var (
-	loggers    = make(map[string]*Logger)
-	loggersMut sync.Mutex
+	loggers         = make(map[string]*Logger)
+	loggersMut      sync.Mutex
+	defaultLogLevel = Debug
 )
 
 func loggerFromGlobalMap(pkgPath string) (result *Logger) {
@@ -17,6 +18,7 @@ func loggerFromGlobalMap(pkgPath string) (result *Logger) {
 	result, contains = loggers[pkgPath]
 	if !contains {
 		result = newLogger(pkgPath)
+		result.level = defaultLogLevel
 		loggers[pkgPath] = result
 	}
 	return

@@ -1,0 +1,10 @@
+# Simple example that keeps the default level on Debug nad sets level for three packages.
+# Version must be 1.
+version: 1
+# Every logger that is not listed in the loggers section gets the default log level.
+default: Debug
+# Map of loggers (identified by a package name) and their log levels.
+loggers:
+  bitbucket.org/project/package: Warning
+  github.com/project/package: Info
+  justaname: Debug
