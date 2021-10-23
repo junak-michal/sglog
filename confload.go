@@ -17,13 +17,13 @@ const currentConfigVersion = 1
 var ConfigFile = "sglog.yaml"
 
 func init() {
-	confErr := loadConfig(ConfigFile)
+	confErr := LoadConfig(ConfigFile)
 	if confErr != nil {
 		internalLog.Warning("Unable to load config file, proceeding with defaults. Error: %v", confErr)
 	}
 }
 
-func loadConfig(filename string) (err error) {
+func LoadConfig(filename string) (err error) {
 	var confYAML confDoc
 	confYAML, err = loadYAMLFile(filename)
 	if err != nil {
